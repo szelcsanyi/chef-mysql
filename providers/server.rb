@@ -66,7 +66,7 @@ action :create do
     system true
     action :create
     only_if do
-      File.readlines('/etc/passwd').grep(/^mysql/).size <= 0
+      ::File.readlines('/etc/passwd').grep(/^mysql/).size <= 0
     end
   end
 
@@ -199,7 +199,7 @@ action :create do
               auto_increment_increment: new_resource.auto_increment_increment,
               auto_increment_offset: new_resource.auto_increment_offset,
               innodb_file_format: new_resource.innodb_file_format,
-              # innodb_buffer_pool_size: (new_resource.innodb_buffer_pool_size).to_s.gsub(/[MGK]/i, 'M': '000000', 'm': '000000', 'G': '000000000', 'g': '000000000', 'K': '000', 'k': '000').to_i,
+              innodb_buffer_pool_size: (new_resource.innodb_buffer_pool_size).to_s.gsub(/[MGK]/i, 'M' => '000000', 'm' => '000000', 'G' => '000000000', 'g' => '000000000', 'K' => '000', 'k' => '000').to_i,
               have_innodb_buffer_pool_instances: new_resource.have_innodb_buffer_pool_instances,
               innodb_open_files: new_resource.innodb_open_files,
               innodb_log_file_size: new_resource.innodb_log_file_size,
@@ -239,12 +239,13 @@ action :create do
               sync_relay_log_info: new_resource.sync_relay_log_info,
               innodb_stats_sample_pages: new_resource.innodb_stats_sample_pages,
               innodb_stats_on_metadata: new_resource.innodb_stats_on_metadata.to_s,
-              innodb_strict_mode: new_resource.innodb_strict_mode
+              innodb_strict_mode: new_resource.innodb_strict_mode,
+              gtid_domain_id: new_resource.gtid_domain_id
              )
   end
   new_resource.updated_by_last_action(t.updated_by_last_action?)
 
-  %w( wget libaio1 nscd logrotate python-daemon python-mysqldb numactl percona-xtrabackup pigz ).each do |pkg|
+  %w( wget libaio1 libjemalloc1 nscd logrotate python-daemon python-mysqldb numactl percona-xtrabackup pigz ).each do |pkg|
     package pkg do
       action :install
     end
@@ -253,7 +254,7 @@ action :create do
   package 'mysql-client' do
     action :install
     not_if do
-      File.exist?('/usr/bin/mysql')
+      ::File.exist?('/usr/bin/mysql')
     end
   end
 
@@ -273,8 +274,8 @@ action :create do
   end
   new_resource.updated_by_last_action(t.updated_by_last_action?)
 
-  filename = File.basename(new_resource.url)
-  dirname = File.basename(filename, '.tar.gz')
+  filename = ::File.basename(new_resource.url)
+  dirname = ::File.basename(filename, '.tar.gz')
 
   link base + '/current' do
     to base + '/' + dirname
@@ -289,7 +290,7 @@ action :create do
     tar -zxf #{filename}
     EOH
     not_if do
-      File.exist?(base + '/' + filename)
+      ::File.exist?(base + '/' + filename)
     end
   end
 
@@ -306,7 +307,7 @@ action :create do
     #{base}/#{dirname}/bin/mysql -S #{base}/var/mysqld.sock -e "GRANT PROCESS, REPLICATION CLIENT ON *.* TO 'db_monitor'@'127.0.0.1' IDENTIFIED BY PASSWORD '*8248778E2BE81112DA61ADD724057530A4BE7275' WITH MAX_USER_CONNECTIONS 5;"
     EOH
     not_if do
-      File.exist?(base + '/data/mysql/user.MYD')
+      ::File.exist?(base + '/data/mysql/user.MYD')
     end
   end
 

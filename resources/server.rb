@@ -8,7 +8,7 @@ attribute :home, kind_of: String, default: '/opt'
 attribute :port, kind_of: [Integer, String], default: '3306'
 attribute :nice, kind_of: [Integer, String], default: '0'
 attribute :open_files_limit, kind_of: [Integer, String], default: '16384'
-attribute default_storage_engine, kind_of: String, default: 'InnoDB'
+attribute :default_storage_engine, kind_of: String, default: 'InnoDB'
 attribute :transaction_isolation, kind_of: String, default: 'READ-COMMITTED'
 attribute :tmpdir, kind_of: String, default: '/dev/shm'
 attribute :max_heap_table_size, kind_of: [Integer, String], default: '32M'
@@ -169,8 +169,10 @@ attribute :explicit_defaults_for_timestamp, kind_of: [FalseClass, TrueClass, Nil
 attribute :innodb_flush_neighbor_pages, kind_of: [String, NilClass], default: nil
 attribute :innodb_flush_neighbors, kind_of: [String, Integer, NilClass], default: nil
 
+attribute :gtid_domain_id, kind_of: [String, Integer, NilClass], default: nil
+
 # If default instance then symlink the mysql socket file to default location
-attribute default_instance, kind_of: [FalseClass, TrueClass], default: false
+attribute :default_instance, kind_of: [FalseClass, TrueClass], default: false
 
 attribute :backup_data, kind_of: [FalseClass, TrueClass], default: false
 attribute :backup_binlog, kind_of: [FalseClass, TrueClass], default: false

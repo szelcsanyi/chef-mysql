@@ -24,6 +24,7 @@ prompt = "{<%= @name %>} [<%= node['hostname'] %>] (\d) > "
 #--- base ---#
 report-host = <%= @report_host %>
 server-id = <%= @server_id %>
+<% unless @gtid_domain_id.nil? %>gtid-domain-id = <%= @gtid_domain_id %><% end %>
 open_files_limit = <%= @open_files_limit %>
 user = mysql
 character-set-server = utf8
@@ -31,17 +32,11 @@ pid-file = <%= @pid %>
 basedir = <%= @basedir %>
 datadir = <%= @datadir %>
 skip-external-locking
-<% unless @skip_name_resolv.nil? %>
-skip-name-resolve
-<% end %>
-<% unless @event_scheduler.empty? %>
-event_scheduler = <%= @event_scheduler %>
-<% end %>
+<% unless @skip_name_resolv.nil? %>skip-name-resolve<% end %>
+<% unless @event_scheduler.empty? %>event_scheduler = <%= @event_scheduler %><% end %>
 read-only = <%= @read_only %>
 
-<% unless @explicit_defaults_for_timestamp.nil? %>
-explicit_defaults_for_timestamp = TRUE
-<% end %>
+<% unless @explicit_defaults_for_timestamp.nil? %>explicit_defaults_for_timestamp = TRUE<% end %>
 
 #--- engine ---#
 default_storage_engine = <%= @default_storage_engine %>
