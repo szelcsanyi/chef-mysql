@@ -16,36 +16,16 @@ action :remove do
     recursive true
   end
 
-  file "/etc/profile.d/#{new_resource.name}" do
-    action :delete
+  %w("/etc/profile.d/#{new_resource.name}" "/etc/init.d/#{new_resource.name}" "/etc/init.d/#{new_resource.name}-healthcheck" "/etc/logrotate.d/#{new_resource.name}-logs" "/tmp/mysql-monitoring-status-#{new_resource.port}" "/tmp/mysql-monitoring-replication-#{new_resource.port}").each do |file|
+    file file do
+      action :delete
+    end
   end
 
-  file "/etc/init.d/#{new_resource.name}" do
-    action :delete
-  end
-
-  file "/etc/init.d/#{new_resource.name}-healthcheck" do
-    action :delete
-  end
-
-  file "/etc/logrotate.d/#{new_resource.name}-logs" do
-    action :delete
-  end
-
-  cron_d "#{new_resource.name}-binlogcleaner" do
-    action :delete
-  end
-
-  cron_d "#{new_resource.name}-monitoring" do
-    action :delete
-  end
-
-  file "/tmp/mysql-monitoring-status-#{new_resource.port}" do
-    action :delete
-  end
-
-  file "/tmp/mysql-monitoring-replication-#{new_resource.port}" do
-    action :delete
+  %w("#{new_resource.name}-binlogcleaner" "#{new_resource.name}-monitoring").each do |cron|
+    cron_d cron do
+      action :delete
+    end
   end
 end
 
@@ -102,20 +82,21 @@ action :create do
       action :create
       recursive false
     end
-    unless (eval 'new_resource.' + dirname + '_device').nil?
-      bash "create partition for mysql #{dirname}" do
-        user 'root'
-        code 'mkfs.' + (eval 'new_resource.' + dirname + '_fs') + " -L mysql-#{dirname} " + (eval 'new_resource.' + dirname + '_device')
-        only_if 'test -b ' + (eval 'new_resource.' + dirname + '_device') + ' && ! blkid ' + (eval 'new_resource.' + dirname + '_device')
-      end
-      mount base + '/' + dirname do
-        fstype   eval 'new_resource.' + dirname + '_fs'
-        device   eval 'new_resource.' + dirname + '_device'
-        options  eval 'new_resource.' + dirname + '_mount_options'
-        pass     0
-        dump     0
-        action   [:mount, :enable]
-      end
+
+    next if (eval 'new_resource.' + dirname + '_device').nil?
+
+    bash "create partition for mysql #{dirname}" do
+      user 'root'
+      code 'mkfs.' + (eval 'new_resource.' + dirname + '_fs') + " -L mysql-#{dirname} " + (eval 'new_resource.' + dirname + '_device')
+      only_if 'test -b ' + (eval 'new_resource.' + dirname + '_device') + ' && ! blkid ' + (eval 'new_resource.' + dirname + '_device')
+    end
+    mount base + '/' + dirname do
+      fstype   eval 'new_resource.' + dirname + '_fs'
+      device   eval 'new_resource.' + dirname + '_device'
+      options  eval 'new_resource.' + dirname + '_mount_options'
+      pass     0
+      dump     0
+      action   [:mount, :enable]
     end
   end
 
@@ -560,5 +541,4 @@ action :create do
       action :delete
     end
   end
-
 end
