@@ -20,7 +20,7 @@ while [[ `df -P $BINLOGDIR | tail -n1 | awk '{print $5}' | cut -d '%' -f 1` -gt 
     FILE=`mysql -S $MYSQLSOCKET -ss -e "SHOW MASTER LOGS" | head -n2 | tail -n1 | awk '{ print $1 }'`;
     $MYSQLCLI -S $MYSQLSOCKET -e "PURGE MASTER LOGS TO '$FILE'"
   else
-    echo "Valami elmaszott. Segits!";
+    echo "Something went wrong. Cannot delete enough binlogs!";
     exit 1;
   fi
   sleep 5;
