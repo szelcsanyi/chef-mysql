@@ -421,7 +421,7 @@ action :create do
       day '*'
       month '*'
       weekday '*'
-      command '#{base}/tools/mysql_binlogcleaner.sh > /dev/null 2>&1'
+      command "#{base}/tools/mysql_binlogcleaner.sh > /dev/null 2>&1"
       user 'root'
       shell '/bin/bash'
     end
