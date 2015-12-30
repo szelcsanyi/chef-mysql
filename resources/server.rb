@@ -163,6 +163,7 @@ attribute :healthcheck_keep_users, kind_of: [String, Array], default: ['root', '
 
 # If disk is getting full, purge some binlog files
 attribute :binlogcleaner_enabled, kind_of: [FalseClass, TrueClass], default: false
+attribute :binlogcleaner_keep_minutes, kind_of: [String, Integer], default: 240
 
 attribute :explicit_defaults_for_timestamp, kind_of: [FalseClass, TrueClass, NilClass], default: nil
 

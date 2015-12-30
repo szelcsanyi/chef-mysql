@@ -409,7 +409,8 @@ action :create do
     mode '0755'
     variables(binlog_dir: base + '/binlog',
               mysql_cli: 'mysql',
-              mysql_socket: base + '/var/mysqld.sock'
+              mysql_socket: base + '/var/mysqld.sock',
+              keep_minutes: new_resource.binlogcleaner_keep_minutes
              )
   end
   new_resource.updated_by_last_action(t.updated_by_last_action?)
