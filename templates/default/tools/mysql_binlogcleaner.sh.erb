@@ -9,7 +9,7 @@ BINLOGDIR=<%= @binlog_dir %>
 MYSQLCLI=<%= @mysql_cli %>
 MYSQLSOCKET=<%= @mysql_socket %>
 
-KEEP_NR_OF_FILES=`find $BINLOGDIR -type f -name 'mysql-bin.[0-9]*' -cmin -<%= @binlogcleaner_keep_minutes %> | wc -l`
+KEEP_NR_OF_FILES=`find $BINLOGDIR -type f -name 'mysql-bin.[0-9]*' -cmin -<%= @keep_minutes %> | wc -l`
 
 if [[ "$KEEP_NR_OF_FILES" -eq 0 ]]; then
   KEEP_NR_OF_FILES=1
