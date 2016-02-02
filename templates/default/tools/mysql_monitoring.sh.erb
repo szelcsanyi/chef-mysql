@@ -10,6 +10,9 @@
 #   - show status
 #   - show slave status
 
+# monitoring user needs to be created with base privilages:
+# GRANT PROCESS, REPLICATION CLIENT ON *.* TO 'db_monitor'@'127.0.0.1' IDENTIFIED BY PASSWORD '*8248778E2BE81112DA61ADD724057530A4BE7275' WITH MAX_USER_CONNECTIONS 5;
+
 MCLI="<%= @basedir %>/current/bin/mysql --no-defaults -u db_monitor -pdb_monitor -h 127.0.0.1 -P <%= @port %>"
 MSTATUS="/tmp/mysql-monitoring-status-<%= @port %>"
 
