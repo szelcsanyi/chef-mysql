@@ -30,7 +30,7 @@ L7_mysql_server 'mysql-example' do
     event_scheduler 'on'
     innodb_file_format 'Barracuda'
     log_warnings 1
-     bind_address '0.0.0.0'
+    bind_address '0.0.0.0'
     default_instance true
     innodb_buffer_pool_populate 1
 end
