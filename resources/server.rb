@@ -19,7 +19,7 @@ attribute :slave_compressed_protocol, kind_of: [Integer, String], default: '1'
 attribute :skip_slave_start, kind_of: [Integer, String], default: '1'
 attribute :slave_skip_errors, kind_of: [String, NilClass], default: nil
 attribute :slave_parallel_threads, kind_of: [Integer, NilClass], default: nil
-attribute :slave_parallel_mode, kind_of: [Integer, NilClass], default: nil
+attribute :slave_parallel_mode, kind_of: [String, NilClass], default: nil
 
 attribute :report_host, kind_of: String, default: node['hostname']
 attribute :server_id, kind_of: [Integer, String], default: node['ipaddress'].split('.')[2].to_i * 1000 + node['ipaddress'].split('.')[3].to_i
