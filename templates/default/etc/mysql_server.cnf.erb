@@ -89,6 +89,7 @@ innodb_blocking_buffer_pool_restore = 1
 <% unless @innodb_stats_sample_pages.nil? %>innodb_stats_sample_pages = <%= @innodb_stats_sample_pages %><% end %>
 <% unless @innodb_stats_on_metadata.empty? %>innodb_stats_on_metadata = <%= @innodb_stats_on_metadata %><% end %>
 <% unless @innodb_strict_mode.empty? %>innodb_strict_mode = <%= @innodb_strict_mode %><% end %>
+<% unless @innodb_defragment.nil? %>innodb_defragment = <%= @innodb_defragment %><% end %>
 
 #--- sql ---#
 sort_buffer_size = <%= @sort_buffer_size %>
@@ -139,6 +140,7 @@ replicate-wild-ignore-table = <%= wild_ignore_table %>
 
 <% unless @sync_master_info.nil? %>sync_master_info = <%= @sync_master_info %><% end %>
 <% unless @slave_parallel_threads.nil? %>slave_parallel_threads = <%= @slave_parallel_threads %><% end %>
+<% unless @slave_parallel_mode.nil? %>slave_parallel_mode = <%= @slave_parallel_mode %><% end %>
 
 #--- myisam ---#
 concurrent_insert = <%= @concurrent_insert %>

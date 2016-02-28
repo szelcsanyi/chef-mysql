@@ -19,6 +19,8 @@ attribute :slave_compressed_protocol, kind_of: [Integer, String], default: '1'
 attribute :skip_slave_start, kind_of: [Integer, String], default: '1'
 attribute :slave_skip_errors, kind_of: [String, NilClass], default: nil
 attribute :slave_parallel_threads, kind_of: [Integer, NilClass], default: nil
+attribute :slave_parallel_mode, kind_of: [Integer, NilClass], default: nil
+
 attribute :report_host, kind_of: String, default: node['hostname']
 attribute :server_id, kind_of: [Integer, String], default: node['ipaddress'].split('.')[2].to_i * 1000 + node['ipaddress'].split('.')[3].to_i
 attribute :read_only, kind_of: [Integer, String], default: '0'
@@ -110,6 +112,7 @@ attribute :innodb_buffer_pool_populate, kind_of: [NilClass, Integer, String], de
 attribute :innodb_stats_sample_pages, kind_of: [NilClass, Integer, String], default: nil
 attribute :innodb_stats_on_metadata, kind_of: [Integer, String], default: 0
 attribute :innodb_strict_mode, kind_of: [Integer, String], default: '1'
+attribute :innodb_defragment, kind_of: [NilClass, Integer, String], default: nil
 
 attribute :thread_handling, kind_of: [NilClass, String], default: nil
 

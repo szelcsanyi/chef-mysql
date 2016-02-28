@@ -221,7 +221,9 @@ action :create do
               innodb_stats_sample_pages: new_resource.innodb_stats_sample_pages,
               innodb_stats_on_metadata: new_resource.innodb_stats_on_metadata.to_s,
               innodb_strict_mode: new_resource.innodb_strict_mode,
-              gtid_domain_id: new_resource.gtid_domain_id
+              gtid_domain_id: new_resource.gtid_domain_id,
+              innodb_defragment: new_resource.innodb_defragment,
+              slave_parallel_mode: new_resource.slave_parallel_mode
              )
   end
   new_resource.updated_by_last_action(t.updated_by_last_action?)
