@@ -347,7 +347,9 @@ action :create do
               socket: base + '/var/mysqld.sock',
               listen_port: new_resource.healthcheck_listen_port,
               max_slave_delay: new_resource.healthcheck_max_slave_delay,
-              keep_users: new_resource.healthcheck_keep_users
+              keep_users: new_resource.healthcheck_keep_users,
+              user: new_resource.healthcheck_user,
+              password: new_resource.healthcheck_password
              )
     if new_resource.healthcheck_enabled
       notifies :restart, "service[#{new_resource.name}-healthcheck]"

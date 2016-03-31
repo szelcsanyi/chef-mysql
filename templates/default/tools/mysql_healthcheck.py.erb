@@ -13,8 +13,8 @@ from BaseHTTPServer import BaseHTTPRequestHandler,HTTPServer
 LISTEN_PORT = <%= @listen_port %>
 MAX_SLAVE_DELAY = <%= @max_slave_delay %>
 MYSQL_SOCKET = "<%= @socket %>"
-MYSQL_USER = "root"
-MYSQL_PASS = ""
+MYSQL_USER = "<%= @user %>"
+MYSQL_PASS = "<%= @password %>"
 LOGFILE = "<%= @logfile %>"
 PIDFILE = "<%= @pidfile %>"
 

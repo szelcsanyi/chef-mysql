@@ -163,6 +163,8 @@ attribute :healthcheck_max_slave_delay, kind_of: [Integer, String], default: '60
 attribute :healthcheck_listen_port, kind_of: [Integer, String], default: '13306'
 # Connections will be killed on error. Keep these user connections.
 attribute :healthcheck_keep_users, kind_of: [String, Array], default: ['root', 'system user']
+attribute :healthcheck_user, kind_of: String, default: 'root'
+attribute :healthcheck_password, kind_of: String, default: ''
 
 # If disk is getting full, purge some binlog files
 attribute :binlogcleaner_enabled, kind_of: [FalseClass, TrueClass], default: false
