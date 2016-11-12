@@ -16,7 +16,7 @@ READONLY=$($MYSQL -N -e "select @@read_only" -u root)
 ISMASTER=$($MYSQL -N -e "show slave hosts" -uroot | /usr/bin/wc -l)
 HAVEBINLOG=$($MYSQL -N -e "select @@log_bin" -uroot)
 
-if [ "<%= @backup_force %>" == "true" ] || ([ "$READONLY" == "0" ] && [ "$ISMASTER" != "0" ]) ; then
+if [ "<%= @backup_force %>" == "false" ] && [ "$READONLY" == "0" ] && [ "$ISMASTER" != "0" ] ; then
   echo "$(data) Not passive master!"
   exit 0
 fi
