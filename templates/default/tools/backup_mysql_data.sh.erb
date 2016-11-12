@@ -28,7 +28,7 @@ declare ISMASTER=0
 READONLY=$($MYSQL -N -e "select @@read_only" -u root)
 ISMASTER=$($MYSQL -N -e "show slave hosts" -uroot | /usr/bin/wc -l)
 
-if [ "$READONLY" == "0" ] && [ "$ISMASTER" != "0" ]; then
+if [ "<%= @backup_force %>" == "true" ] || ([ "$READONLY" == "0" ] && [ "$ISMASTER" != "0" ]) ; then
   echo "$(date) Not passive master! Exiting."
   RET=0
   exit 0

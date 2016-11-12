@@ -182,6 +182,7 @@ attribute :default_instance, kind_of: [FalseClass, TrueClass], default: false
 
 attribute :backup_data, kind_of: [FalseClass, TrueClass], default: false
 attribute :backup_binlog, kind_of: [FalseClass, TrueClass], default: false
+attribute :backup_force, kind_of: [FalseClass, TrueClass], default: false
 attribute :backup_host, kind_of: [String, NilClass], default: nil
 attribute :backup_port, kind_of: [String, Integer, NilClass], default: 22
 attribute :backup_user, kind_of: [String, NilClass], default: nil

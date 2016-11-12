@@ -448,7 +448,8 @@ action :create do
               backup_user: new_resource.backup_user,
               backup_host: new_resource.backup_host,
               backup_path: new_resource.backup_path,
-              backup_port: new_resource.backup_port
+              backup_port: new_resource.backup_port,
+              backup_force: new_resource.backup_force
              )
   end
 
@@ -462,7 +463,8 @@ action :create do
               backup_user: new_resource.backup_user,
               backup_host: new_resource.backup_host,
               backup_path: new_resource.backup_path,
-              backup_port: new_resource.backup_port
+              backup_port: new_resource.backup_port,
+              backup_force: new_resource.backup_force
              )
   end
 
