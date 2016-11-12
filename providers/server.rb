@@ -228,7 +228,7 @@ action :create do
   end
   new_resource.updated_by_last_action(t.updated_by_last_action?)
 
-  %w( wget libaio1 libjemalloc1 nscd logrotate python-daemon python-mysqldb numactl percona-xtrabackup pigz ).each do |pkg|
+  %w( wget libaio1 libjemalloc1 nscd logrotate python-daemon python-mysqldb numactl percona-xtrabackup-24 pigz ).each do |pkg|
     package pkg do
       action :install
     end
