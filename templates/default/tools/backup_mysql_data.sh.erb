@@ -48,10 +48,10 @@ if [ -f "/root/.my.cnf" ]; then
   PASSWORD="--password="$(sed -nr 's/password\ ?=\ ?(.+)/\1/p' /root/.my.cnf)
 fi
 
-declare BACKUP_FILE="" 
+declare BACKUP_FILE=""
 BACKUP_FILE="$(hostname -f)/$(hostname -f).$(date +%Y%m%d-%H%M%S).xtrabackup.tar.gz"
 if [ -x "/usr/bin/innobackupex" ]; then
-  if ! /usr/bin/innobackupex --use-memory=1G --safe-slave-backup --slave-info --tmpdir=<%= @base %>/tmp --defaults-file=<%= @base %>/etc/my.cnf --user=root $PASSWORD --defaults-group=server --stream=tar ./ | 	 pigz -9 -p <%= node["cpu"]["total"]/2 %> | $SSH "cat - > <%= @backup_path %>/$BACKUP_FILE.inprogress"; then
+  if ! /usr/bin/innobackupex --defaults-file=<%= @base %>/etc/my.cnf --use-memory=1G --safe-slave-backup --slave-info --tmpdir=<%= @base %>/tmp --user=root $PASSWORD --defaults-group=server --stream=tar ./ | pigz -9 -p <%= (node["cpu"]["total"]/2.to_f).ceil %> | $SSH "cat - > <%= @backup_path %>/$BACKUP_FILE.inprogress"; then
     echo "$(date) Backup failed!"
     exit 1
   fi
