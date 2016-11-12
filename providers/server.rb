@@ -488,6 +488,7 @@ action :create do
     mode '0600'
     owner 'root'
     group 'root'
+    variables(privkey: new_resource.backup_privkey)
   end
 
   template base + '/tools/backup_rsa.pub' do
@@ -496,6 +497,7 @@ action :create do
     mode '0644'
     owner 'root'
     group 'root'
+    variables(pubkey: new_resource.backup_pubkey)
   end
 
   require 'digest/md5'
