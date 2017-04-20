@@ -25,6 +25,7 @@
 #
 # Use LSB init script functions for printing messages, if possible
 #
+export _SYSTEMCTL_SKIP_REDIRECT=1
 lsb_functions="/lib/lsb/init-functions"
 if test -f $lsb_functions ; then
   . $lsb_functions
