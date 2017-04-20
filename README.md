@@ -16,7 +16,7 @@ Installs/Configures [MySQL](https://www.mysql.com/) via Opscode Chef
 * `L7_mysql_server` - Configures mysql instance
 
 ## Usage
-###Provider parameters:
+### Provider parameters:
 
 * `url`: url for mysql binary tgz (default: http://www.percona.com/redir/downloads/Percona-Server-5.5/Percona-Server-5.5.30-30.1/binary/linux/x86_64/Percona-Server-5.5.30-rel30.1-465.Linux.x86_64.tar.gz)
 It is important to define your own binary source address beacause this might be changed in future releases!
