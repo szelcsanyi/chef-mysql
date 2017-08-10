@@ -65,7 +65,7 @@ innodb_io_capacity = <%= @innodb_io_capacity %>
 innodb_commit_concurrency = <%= @innodb_commit_concurrency %>
 innodb_data_file_path = <%= @innodb_data_file_path %>
 innodb_log_files_in_group = <%= @innodb_log_files_in_group %>
-innodb_additional_mem_pool_size = <%= @innodb_additional_mem_pool_size %>
+<% unless @innodb_additional_mem_pool_size.nil? %>innodb_additional_mem_pool_size = <%= @innodb_additional_mem_pool_size %><% end %>
 innodb_lock_wait_timeout = <%= @innodb_lock_wait_timeout %>
 innodb_doublewrite = <%= @innodb_doublewrite %>
 innodb_data_home_dir = <%= @innodb_data_home_dir %>

@@ -95,7 +95,7 @@ attribute :innodb_io_capacity, kind_of: [Integer, String], default: '400'
 attribute :innodb_commit_concurrency, kind_of: [Integer, String], default: '16'
 attribute :innodb_data_file_path, kind_of: String, default: 'ibdata1:128M:autoextend'
 attribute :innodb_log_files_in_group, kind_of: [Integer, String], default: '2'
-attribute :innodb_additional_mem_pool_size, kind_of: [Integer, String], default: '10M'
+attribute :innodb_additional_mem_pool_size, kind_of: [Integer, String], default: nil
 attribute :innodb_lock_wait_timeout, kind_of: [Integer, String], default: '50'
 attribute :innodb_doublewrite, kind_of: [Integer, String], default: '1'
 attribute :innodb_write_io_threads, kind_of: [Integer, String], default: '4'
