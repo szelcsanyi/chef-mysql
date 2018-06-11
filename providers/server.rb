@@ -450,7 +450,7 @@ action :create do
               backup_path: new_resource.backup_path,
               backup_port: new_resource.backup_port,
               backup_force: new_resource.backup_force,
-              backup_encrypt: new_resource.backup_password.kind_of?(String)
+              backup_encrypt: new_resource.backup_password.is_a?(String)
              )
   end
 
@@ -503,7 +503,7 @@ action :create do
     variables(pubkey: new_resource.backup_pubkey)
   end
 
-  if new_resource.backup_password.kind_of?(String)
+  if new_resource.backup_password.is_a?(String)
     file base + '/tools/backup_key' do
       content new_resource.backup_password
       backup false
