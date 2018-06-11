@@ -13,6 +13,14 @@ declare RET=1
 declare MYSQL="<%= @base %>/current/bin/mysql -S <%= @base %>/var/mysqld.sock"
 declare SSH="/usr/bin/ssh -q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i <%= @base %>/tools/backup_rsa -l <%= @backup_user %> -p <%= @backup_port %> <%= @backup_host %>"
 
+<% if @backup_encrypt %>
+declare ENCRYPT="openssl enc -aes-256-cbc -pass file:<%= @base %>/tools/backup_key"
+<% else %>
+declare ENCRYPT="cat -"
+<% end %>
+# Decrypt encrpyted backup:
+# openssl enc -aes-256-cbc -d -pass file:backup_key < encrypted.backup > UNENCRYPTED_FILE
+
 function finish {
   if [ "$RET" -ne 0 ]; then
     /bin/touch /tmp/mysql-backup-<%= @port %>-failed
@@ -51,7 +59,7 @@ fi
 declare BACKUP_FILE=""
 BACKUP_FILE="$(hostname -f)/$(hostname -f).$(date +%Y%m%d-%H%M%S).xtrabackup.tar.gz"
 if [ -x "/usr/bin/innobackupex" ]; then
-  if ! /usr/bin/innobackupex --defaults-file=<%= @base %>/etc/my.cnf --use-memory=1G --safe-slave-backup --slave-info --tmpdir=<%= @base %>/tmp --user=root $PASSWORD --defaults-group=server --stream=tar ./ | pigz -9 -p <%= (node["cpu"]["total"]/2.to_f).ceil %> | $SSH "cat - > <%= @backup_path %>/$BACKUP_FILE.inprogress"; then
+  if ! /usr/bin/innobackupex --defaults-file=<%= @base %>/etc/my.cnf --use-memory=1G --safe-slave-backup --slave-info --tmpdir=<%= @base %>/tmp --user=root $PASSWORD --defaults-group=server --stream=tar ./ | pigz -9 -p <%= (node["cpu"]["total"]/2.to_f).ceil %> | $ENCRYPT | $SSH "cat - > <%= @backup_path %>/$BACKUP_FILE.inprogress"; then
     echo "$(date) Backup failed!"
     exit 1
   fi

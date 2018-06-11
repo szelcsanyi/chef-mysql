@@ -191,6 +191,7 @@ attribute :backup_hour, kind_of: [String, Integer, NilClass], default: nil
 attribute :backup_minute, kind_of: [String, Integer, NilClass], default: nil
 attribute :backup_pubkey, kind_of: [String, NilClass], default: nil
 attribute :backup_privkey, kind_of: [String, NilClass], default: nil
+attribute :backup_password, kind_of: [String, NilClass], default: nil
 
 attribute :start_by_default, kind_of: [FalseClass, TrueClass], default: false
 

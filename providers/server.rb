@@ -449,7 +449,8 @@ action :create do
               backup_host: new_resource.backup_host,
               backup_path: new_resource.backup_path,
               backup_port: new_resource.backup_port,
-              backup_force: new_resource.backup_force
+              backup_force: new_resource.backup_force,
+              backup_encrypt: new_resource.backup_password.kind_of?(String)
              )
   end
 
@@ -500,6 +501,16 @@ action :create do
     owner 'root'
     group 'root'
     variables(pubkey: new_resource.backup_pubkey)
+  end
+
+  if new_resource.backup_password.kind_of?(String)
+    file base + '/tools/backup_key' do
+      content new_resource.backup_password
+      backup false
+      mode 0600
+      owner 'root'
+      group 'root'
+    end
   end
 
   require 'digest/md5'
