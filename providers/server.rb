@@ -113,6 +113,7 @@ action :create do
               pid: base + '/var/mysqld.pid',
               basedir: base + '/current',
               datadir: base + '/data',
+              configdir: base + '/etc',
               default_storage_engine: new_resource.default_storage_engine,
               nice: new_resource.nice,
               log_error: base + '/log/error.log',
@@ -228,9 +229,13 @@ action :create do
   end
   new_resource.updated_by_last_action(t.updated_by_last_action?)
 
-  %w( wget libaio1 libjemalloc1 nscd logrotate python-daemon python-mysqldb numactl percona-xtrabackup-24 pigz ).each do |pkg|
-    package pkg do
-      action :install
+  if node[:platform_version] >= '20.04'
+    %w( wget libaio1 libjemalloc2 nscd logrotate python3-daemon python3-mysqldb numactl pigz ).each do |pkg|
+      package pkg
+    end
+  else
+    %w( wget libaio1 libjemalloc1 nscd logrotate python-daemon python-mysqldb numactl pigz ).each do |pkg|
+      package pkg
     end
   end
 
@@ -290,7 +295,7 @@ action :create do
     #{base}/#{dirname}/bin/mysql -S #{base}/var/mysqld.sock -e "GRANT PROCESS, REPLICATION CLIENT ON *.* TO 'db_monitor'@'127.0.0.1' IDENTIFIED BY PASSWORD '*8248778E2BE81112DA61ADD724057530A4BE7275' WITH MAX_USER_CONNECTIONS 5;"
     EOH
     not_if do
-      ::File.exist?(base + '/data/mysql/user.MYD')
+      ::File.exist?(base + '/data/mysql/user.frm')
     end
   end
 
@@ -331,7 +336,7 @@ action :create do
     day '*'
     month '*'
     weekday '*'
-    command "#{base}/tools/mysql_monitoring.sh > /dev/null 2>&1"
+    command "#{base}/tools/mysql_monitoring.sh > /dev/null 2>&1 || echo #{new_resource.name} has failed to monitor > /tmp/mysql-monitoring-error"
     user 'root'
     shell '/bin/bash'
   end

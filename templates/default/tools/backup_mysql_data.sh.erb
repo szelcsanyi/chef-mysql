@@ -32,9 +32,27 @@ trap finish EXIT
 
 declare READONLY=0
 declare ISMASTER=0
+declare USER='--user=root'
+declare PASSWORD=""
 
-READONLY=$($MYSQL -N -e "select @@read_only" -u root)
-ISMASTER=$($MYSQL -N -e "show slave hosts" -uroot | /usr/bin/wc -l)
+# Access
+if [ -f "/root/.my.cnf" ]; then
+  USER_TMP="--user="$(sed -nr 's/user\ ?=\ ?(.+)/\1/p' /root/.my.cnf)
+  if [ "$USER_TMP" != "--user=" ]; then USER=$USER_TMP; fi
+  PASSWORD_TMP="--password="$(sed -nr 's/password\ ?=\ ?(.+)/\1/p' /root/.my.cnf)
+  if [ "$PASSWORD_TMP" != "--password=" ]; then PASSWORD=$PASSWORD_TMP; fi
+fi
+
+if [ -f "<%= @base %>/tools/backup.cnf" ]; then
+  USER_TMP="--user="$(sed -nr 's/user\ ?=\ ?(.+)/\1/p' <%= @base %>/tools/backup.cnf)
+  if [ "$USER_TMP" != "--user=" ]; then USER=$USER_TMP; fi
+  PASSWORD_TMP="--password="$(sed -nr 's/password\ ?=\ ?(.+)/\1/p' <%= @base %>/tools/backup.cnf)
+  if [ "$PASSWORD_TMP" != "--password=" ]; then PASSWORD=$PASSWORD_TMP; fi
+fi
+
+# Detect replication
+READONLY=$($MYSQL -N -e "select @@read_only" $USER $PASSWORD)
+ISMASTER=$($MYSQL -N -e "show slave hosts" $USER $PASSWORD | /usr/bin/wc -l)
 
 if [ "<%= @backup_force %>" == "false" ] && [ "$READONLY" == "0" ] && [ "$ISMASTER" != "0" ] ; then
   echo "$(date) Not passive master! Exiting."
@@ -50,16 +68,22 @@ if ! $SSH "mkdir -p <%= @backup_path %>/$(hostname -f)"; then
   exit 1
 fi
 
-# do the extrabackup
-declare PASSWORD=""
-if [ -f "/root/.my.cnf" ]; then
-  PASSWORD="--password="$(sed -nr 's/password\ ?=\ ?(.+)/\1/p' /root/.my.cnf)
+
+# Do the backup
+declare BACKUP_FILE=""
+declare BACKUP_TOOL=""
+
+
+if [ -x "<%= @base %>/current/bin/mariadb-backup" ]; then
+  BACKUP_TOOL="<%= @base %>/current/bin/mariadb-backup --defaults-file=<%= @base %>/etc/my.cnf --use-memory=1G --tmpdir=<%= @base %>/tmp $USER $PASSWORD --defaults-group=server --backup --stream=xbstream "
+  BACKUP_FILE="$(hostname -f)/$(hostname -f).$(date +%Y%m%d-%H%M%S).xbstream.tar.gz"
+elif [ -x "/usr/bin/innobackupex" ]; then
+  BACKUP_TOOL="/usr/bin/innobackupex --defaults-file=<%= @base %>/etc/my.cnf --use-memory=1G --safe-slave-backup --slave-info --tmpdir=<%= @base %>/tmp $USER $PASSWORD --defaults-group=server --stream=tar ./ "
+  BACKUP_FILE="$(hostname -f)/$(hostname -f).$(date +%Y%m%d-%H%M%S).xtrabackup.tar.gz"
 fi
 
-declare BACKUP_FILE=""
-BACKUP_FILE="$(hostname -f)/$(hostname -f).$(date +%Y%m%d-%H%M%S).xtrabackup.tar.gz"
-if [ -x "/usr/bin/innobackupex" ]; then
-  if ! /usr/bin/innobackupex --defaults-file=<%= @base %>/etc/my.cnf --use-memory=1G --safe-slave-backup --slave-info --tmpdir=<%= @base %>/tmp --user=root $PASSWORD --defaults-group=server --stream=tar ./ | pigz -9 -p <%= (node["cpu"]["total"]/2.to_f).ceil %> | $ENCRYPT | $SSH "cat - > <%= @backup_path %>/$BACKUP_FILE.inprogress"; then
+if [ ! -z "$BACKUP_TOOL" ]; then
+  if ! $BACKUP_TOOL | pigz -6 -p <%= (node["cpu"]["total"]/2.to_f).ceil %> | $ENCRYPT | $SSH "cat - > <%= @backup_path %>/$BACKUP_FILE.inprogress"; then
     echo "$(date) Backup failed!"
     exit 1
   fi
@@ -69,7 +93,7 @@ if [ -x "/usr/bin/innobackupex" ]; then
     exit 1
   fi
 else
-  echo "$(date) innobackupex not found!"
+  echo "$(date) innobackupex/mariabackup not found!"
   exit 1
 fi
 
